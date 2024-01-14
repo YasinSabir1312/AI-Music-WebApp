@@ -1,28 +1,54 @@
-song ="";
+song = "";
 
 function preload()
 {
-    song = loadSound("music.mp3");
+	song = loadSound("music.mp3");
 }
 
-function setup()
+scoreRightWrist = 0;
+scoreLeftWrist = 0;
+
+rightWristX = 0;
+rightWristY = 0;
+
+leftWristX = 0;
+leftWristY = 0;
+
+function setup() {
+	canvas =  createCanvas(600, 500);
+	canvas.center();
+
+	video = createCapture(VIDEO);
+	video.hide();
+
+	poseNet = ml5.poseNet(video, modelLoaded);
+	poseNet.on('pose', gotPoses);
+}
+
+function modelLoaded() {
+    console.log('Posenet is Initialized');
+}
+
+function gotPoses(results)
 {
-    canvas = createCanvas(600, 500);
-    canvas.center()
+    if(results.length > 0)
+    {
+        scoreRightWrist = results[0].pose.keypoints[10].score;
+        scoreLeftWrist = results[0].pose.keypoints[9].score;
+        console.log("scoreRightWrist = " + scoreRightWrist + " scoreLeftWrist = " + scoreLeftWrist);
 
-    video = createCapture(VIDEO);
-    video.hide();
+        rightWristX = result[0].pose.rightWrist.x;
+        rightWristY = result[0].pose.rightWrist.y;
+        console.log("rightWristX = " + rightWristX +" rightWristY = "+ rightWristY);
 
-    poseNet = ml5.poseNet(video, modelLoaded);
-    poseNet.on('pose', gotPoses);
+        leftWristX = result[0].pose.leftWrist.x;
+        leftWristY = result[0].pose.leftWrist.y;
+        console.log("leftWristX = " + leftWristX +" leftWristY = "+ leftWristY);
+
+       
+    }
+
 
 }
 
-function draw()
-{
-    Image(video, 0, 0, 600, 500);
 
-    Fill("#FF0000");
-    Stroke("#FF0000");
-}
- 
